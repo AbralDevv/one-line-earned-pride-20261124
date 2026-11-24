@@ -15,7 +15,20 @@ function resolveOutputDir(): string {
   return "/output";
 }
 
+function validateEntry(entry: string): void {
+  // The competition gate is 1–240 chars, exactly one line: fail loudly
+  // here instead of writing a file the harness would refuse.
+  const lines = entry.split("\n");
+  if (lines.length !== 1) {
+    throw new Error(`entry must be exactly one line, got ${lines.length}`);
+  }
+  if (entry.length < 1 || entry.length > 240) {
+    throw new Error(`entry must be 1–240 chars, got ${entry.length}`);
+  }
+}
+
 function main(): void {
+  validateEntry(ENTRY);
   let outDir = resolveOutputDir();
   try {
     mkdirSync(outDir, { recursive: true });
